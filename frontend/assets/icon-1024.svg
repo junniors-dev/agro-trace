@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <rect width="1024" height="1024" fill="#14532D"/>
+  <g transform="translate(512,470) scale(2.4) translate(-100,-100)" fill="none" stroke="#FAF9F5" stroke-width="8" stroke-linejoin="round" stroke-linecap="round">
+    <!-- Escudo -->
+    <path d="M100 8 L185 45 C185 45 185 130 100 190 C15 130 15 45 15 45 Z"/>
+    <!-- Hoja -->
+    <path d="M65 145 C55 110 65 70 105 50 C110 75 108 115 75 140 Z" fill="#FAF9F5" stroke="none"/>
+    <!-- Nervadura -->
+    <path d="M70 138 C78 108 90 80 112 62" stroke="#14532D" stroke-width="4"/>
+    <!-- Checkmark -->
+    <path d="M108 128 L124 148 L156 108" stroke-width="12"/>
+  </g>
+  <!-- Modulos QR dentro de la hoja -->
+  <g fill="#14532D" transform="translate(512,470) scale(2.4) translate(-100,-100)">
+    <rect x="70" y="78" width="9" height="9" rx="1.5"/>
+    <rect x="82" y="80" width="9" height="9" rx="1.5"/>
+    <rect x="72" y="92" width="8" height="8" rx="1.5"/>
+    <rect x="86" y="96" width="8" height="8" rx="1.5"/>
+    <rect x="76" y="106" width="7" height="7" rx="1.5"/>
+  </g>
+</svg>

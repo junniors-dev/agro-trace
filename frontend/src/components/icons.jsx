@@ -1,0 +1,32 @@
+// Iconos SVG (stroke) usados en toda la app. Heredan el color via currentColor.
+const s = { fill: 'none', stroke: 'currentColor', strokeWidth: 1.8, strokeLinecap: 'round', strokeLinejoin: 'round' };
+
+export const IconHome = (p) => (<svg viewBox="0 0 24 24" width="24" height="24" {...s} {...p}><path d="M3 10.5 12 3l9 7.5" /><path d="M5 9.5V21h14V9.5" /><path d="M9.5 21v-6h5v6" /></svg>);
+export const IconPlus = (p) => (<svg viewBox="0 0 24 24" width="24" height="24" {...s} {...p}><circle cx="12" cy="12" r="9" /><path d="M12 8v8M8 12h8" /></svg>);
+export const IconQr = (p) => (<svg viewBox="0 0 24 24" width="24" height="24" {...s} {...p}><rect x="3" y="3" width="7" height="7" rx="1" /><rect x="14" y="3" width="7" height="7" rx="1" /><rect x="3" y="14" width="7" height="7" rx="1" /><path d="M14 14h3v3M21 14v7h-7v-3" /></svg>);
+export const IconChart = (p) => (<svg viewBox="0 0 24 24" width="24" height="24" {...s} {...p}><path d="M4 20V4" /><path d="M4 20h16" /><rect x="7" y="12" width="3" height="5" /><rect x="12" y="8" width="3" height="9" /><rect x="17" y="5" width="3" height="12" /></svg>);
+export const IconUser = (p) => (<svg viewBox="0 0 24 24" width="24" height="24" {...s} {...p}><circle cx="12" cy="8" r="4" /><path d="M4 20c0-4 4-6 8-6s8 2 8 6" /></svg>);
+export const IconBell = (p) => (<svg viewBox="0 0 24 24" width="24" height="24" {...s} {...p}><path d="M6 9a6 6 0 1 1 12 0c0 5 2 6 2 6H4s2-1 2-6Z" /><path d="M10 20a2 2 0 0 0 4 0" /></svg>);
+export const IconLeaf = (p) => (<svg viewBox="0 0 24 24" width="24" height="24" {...s} {...p}><path d="M4 20C3 14 7 5 20 4c1 10-4 15-11 15-2 0-4-.5-5-1Z" /><path d="M4 20C7 14 12 9 18 7" /></svg>);
+export const IconPhone = (p) => (<svg viewBox="0 0 24 24" width="24" height="24" {...s} {...p}><path d="M5 4h4l2 5-3 2a12 12 0 0 0 5 5l2-3 5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2Z" /></svg>);
+export const IconLock = (p) => (<svg viewBox="0 0 24 24" width="24" height="24" {...s} {...p}><rect x="4.5" y="10" width="15" height="10" rx="2" /><path d="M8 10V7a4 4 0 0 1 8 0v3" /></svg>);
+export const IconPin = (p) => (<svg viewBox="0 0 24 24" width="24" height="24" {...s} {...p}><path d="M12 21s7-6.5 7-11a7 7 0 1 0-14 0c0 4.5 7 11 7 11Z" /><circle cx="12" cy="10" r="2.5" /></svg>);
+export const IconCalendar = (p) => (<svg viewBox="0 0 24 24" width="24" height="24" {...s} {...p}><rect x="3.5" y="5" width="17" height="16" rx="2" /><path d="M3.5 10h17M8 3v4M16 3v4" /></svg>);
+export const IconScale = (p) => (<svg viewBox="0 0 24 24" width="24" height="24" {...s} {...p}><path d="M12 3v18M5 21h14" /><path d="M7 7h10l3 6a4 4 0 0 1-8 0M7 7l-3 6a4 4 0 0 0 8 0" /></svg>);
+export const IconCamera = (p) => (<svg viewBox="0 0 24 24" width="24" height="24" {...s} {...p}><path d="M4 8h3l2-2h6l2 2h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1Z" /><circle cx="12" cy="13" r="3.5" /></svg>);
+export const IconBox = (p) => (<svg viewBox="0 0 24 24" width="24" height="24" {...s} {...p}><path d="m12 3 8 4.5v9L12 21l-8-4.5v-9L12 3Z" /><path d="m4 7.5 8 4.5 8-4.5M12 12v9" /></svg>);
+export const IconFactory = (p) => (<svg viewBox="0 0 24 24" width="24" height="24" {...s} {...p}><path d="M3 21V10l6 4V10l6 4V6l6 15H3Z" /></svg>);
+export const IconWarehouse = (p) => (<svg viewBox="0 0 24 24" width="24" height="24" {...s} {...p}><path d="M3 21V8l9-4 9 4v13" /><rect x="7" y="13" width="10" height="8" /></svg>);
+export const IconSprout = (p) => (<svg viewBox="0 0 24 24" width="24" height="24" {...s} {...p}><path d="M12 21v-8" /><path d="M12 13c0-4-3-6-7-6 0 4 3 6 7 6Z" /><path d="M12 13c0-3 2-5 6-5 0 3-2 5-6 5Z" /></svg>);
+export const IconCheck = (p) => (<svg viewBox="0 0 24 24" width="24" height="24" {...s} {...p}><path d="m5 13 4 4L19 7" /></svg>);
+export const IconCheckCircle = (p) => (<svg viewBox="0 0 24 24" width="24" height="24" {...s} {...p}><circle cx="12" cy="12" r="9" /><path d="m8 12 2.5 2.5L16 9" /></svg>);
+export const IconShield = (p) => (<svg viewBox="0 0 24 24" width="24" height="24" {...s} {...p}><path d="M12 3l7 3v6c0 5-3 7-7 9-4-2-7-4-7-9V6l7-3Z" /><path d="m9 12 2 2 4-4" /></svg>);
+export const IconClock = (p) => (<svg viewBox="0 0 24 24" width="24" height="24" {...s} {...p}><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" /></svg>);
+export const IconGlobe = (p) => (<svg viewBox="0 0 24 24" width="24" height="24" {...s} {...p}><circle cx="12" cy="12" r="9" /><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18" /></svg>);
+export const IconArrowLeft = (p) => (<svg viewBox="0 0 24 24" width="24" height="24" {...s} {...p}><path d="M15 5l-7 7 7 7" /></svg>);
+export const IconArrowRight = (p) => (<svg viewBox="0 0 24 24" width="24" height="24" {...s} {...p}><path d="M9 5l7 7-7 7" /></svg>);
+export const IconDownload = (p) => (<svg viewBox="0 0 24 24" width="24" height="24" {...s} {...p}><path d="M12 3v12m0 0 4-4m-4 4-4-4" /><path d="M4 20h16" /></svg>);
+export const IconShare = (p) => (<svg viewBox="0 0 24 24" width="24" height="24" {...s} {...p}><circle cx="6" cy="12" r="2.5" /><circle cx="18" cy="6" r="2.5" /><circle cx="18" cy="18" r="2.5" /><path d="m8 11 8-4M8 13l8 4" /></svg>);
+export const IconLogout = (p) => (<svg viewBox="0 0 24 24" width="24" height="24" {...s} {...p}><path d="M15 4h3a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-3" /><path d="M10 12H3m0 0 3-3m-3 3 3 3" /></svg>);
+export const IconChevron = (p) => (<svg viewBox="0 0 24 24" width="24" height="24" {...s} {...p}><path d="m9 6 6 6-6 6" /></svg>);
+export const IconWifiOff = (p) => (<svg viewBox="0 0 24 24" width="24" height="24" {...s} {...p}><path d="M3 3l18 18M9 17a4 4 0 0 1 6 0M5 13a9 9 0 0 1 4-2.5M19 13a9 9 0 0 0-3-2" /><path d="M12 20h.01" /></svg>);

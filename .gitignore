@@ -1,0 +1,23 @@
+# Dependencias
+node_modules/
+**/node_modules/
+
+# Builds
+frontend/dist/
+frontend/android/app/build/
+frontend/android/build/
+frontend/android/.gradle/
+frontend/android/capacitor-cordova-android-plugins/build/
+
+# Base de datos legacy del backend (ya no se usa)
+backend/*.db
+backend/*.db-*
+
+# APK generado (pesado; se regenera)
+*.apk
+
+# Sistema / editor
+.DS_Store
+Thumbs.db
+*.log
+.vscode/

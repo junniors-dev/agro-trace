@@ -1,0 +1,18 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1024" height="1024" fill="#14532D"/>
+  <!-- Hoja -->
+  <path d="M812 210C447 210 190 430 190 720c0 62 13 118 37 168C330 620 520 452 760 372c-190 128-318 300-402 522C420 918 500 918 566 894 786 812 892 570 852 268c-4-20-16-40-40-58Z" fill="#FAF9F5"/>
+  <!-- Nervadura -->
+  <path d="M228 862C336 620 520 452 776 356" stroke="#14532D" stroke-width="26" stroke-linecap="round"/>
+  <!-- Modulos QR -->
+  <g fill="#14532D">
+    <rect x="410" y="300" width="66" height="66" rx="8"/>
+    <rect x="490" y="300" width="66" height="66" rx="8"/>
+    <rect x="570" y="300" width="66" height="66" rx="8"/>
+    <rect x="410" y="380" width="66" height="66" rx="8"/>
+    <rect x="570" y="380" width="66" height="66" rx="8"/>
+    <rect x="490" y="460" width="66" height="66" rx="8"/>
+    <rect x="628" y="462" width="54" height="54" rx="8"/>
+    <rect x="392" y="480" width="54" height="54" rx="8"/>
+  </g>
+</svg>

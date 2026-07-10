@@ -1,0 +1,44 @@
+/* Leaflet CSS (debe ir antes de las directivas de Tailwind) */
+@import 'leaflet/dist/leaflet.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', system-ui, sans-serif;
+  background: #FAF9F5;
+  color: #1f2937;
+  -webkit-font-smoothing: antialiased;
+  /* respeta el notch en celulares */
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) 0 env(safe-area-inset-left);
+}
+
+/* Oculta scrollbars horizontales de los chips */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Animacion suave para el check de exito */
+@keyframes pop {
+  0% { transform: scale(0.6); opacity: 0; }
+  70% { transform: scale(1.08); opacity: 1; }
+  100% { transform: scale(1); }
+}
+.animate-pop { animation: pop 0.4s ease-out; }
+
+/* El mapa Leaflet debe llenar su contenedor */
+.leaflet-container {
+  width: 100%;
+  height: 100%;
+  background: #dce3dc;
+  font-family: 'Inter', sans-serif;
+}

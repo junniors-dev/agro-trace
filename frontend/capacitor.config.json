@@ -1,0 +1,12 @@
+{
+  "appId": "pe.agrotrace.app",
+  "appName": "AGRO-TRACE",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "https",
+    "cleartext": true
+  },
+  "android": {
+    "allowMixedContent": true
+  }
+}

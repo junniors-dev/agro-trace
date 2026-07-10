@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">AGRO-TRACE</string>
+    <string name="title_activity_main">AGRO-TRACE</string>
+    <string name="package_name">pe.agrotrace.app</string>
+    <string name="custom_url_scheme">pe.agrotrace.app</string>
+</resources>

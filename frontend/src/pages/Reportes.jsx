@@ -1,56 +1,68 @@
-// Reportes de Sostenibilidad (stub visual segun mockup).
-// Los datos del grafico son estaticos: pantalla secundaria, no es el foco de la demo.
-// TODO(produccion): alimentar con datos reales del backend y exportar PDF/Excel.
+// Reportes de Sostenibilidad con datos REALES (calculados de los lotes certificados)
+// y exportación funcional a PDF y Excel (client-side, dentro del APK).
+import { useEffect, useState } from 'react';
+import { api } from '../services/api.js';
 import AppShell from '../components/layout/AppShell.jsx';
 import { Card, Button, Badge } from '../components/ui/index.jsx';
 import { IconShield, IconPin, IconGlobe, IconClock, IconDownload } from '../components/icons.jsx';
-
-const MESES = [
-  { m: 'Ene', v: 10 }, { m: 'Feb', v: 15 }, { m: 'Mar', v: 12 }, { m: 'Abr', v: 8 },
-  { m: 'May', v: 13 }, { m: 'Jun', v: 10 }, { m: 'Jul', v: 15 }, { m: 'Ago', v: 15 },
-  { m: 'Sep', v: 14 }, { m: 'Oct', v: 13 }, { m: 'Nov', v: 16 }, { m: 'Dic', v: 18 },
-];
-const MAX = Math.max(...MESES.map((x) => x.v));
+import { descargarReportePDF } from '../services/pdf.js';
+import { descargarReporteExcel } from '../services/excel.js';
 
 export default function Reportes() {
+  const [rep, setRep] = useState(null);
+
+  useEffect(() => {
+    api.reporteSostenibilidad().then(setRep).catch(() => {});
+  }, []);
+
+  if (!rep) {
+    return (
+      <AppShell headerVariant="light" title="Reportes de Sostenibilidad">
+        <p className="py-10 text-center text-sm text-gray-400">Generando reporte…</p>
+      </AppShell>
+    );
+  }
+
+  const max = Math.max(1, ...rep.porMes.map((x) => x.valor));
+
   return (
     <AppShell headerVariant="light" title="Reportes de Sostenibilidad">
-      <div className="mb-4"><Badge estado="validado">Período 2026 · Listo para exportar</Badge></div>
+      <div className="mb-4"><Badge estado="validado">Generado {rep.resumen.generado} · datos reales</Badge></div>
 
-      {/* Grafico de barras (estatico) */}
+      {/* Gráfico de barras (datos reales por mes) */}
       <Card className="mb-4 p-4">
         <p className="mb-3 text-sm font-semibold text-gray-700">Lotes certificados por mes</p>
         <div className="flex h-40 items-end justify-between gap-1">
-          {MESES.map((x) => (
-            <div key={x.m} className="flex flex-1 flex-col items-center gap-1">
-              <span className="text-[9px] text-gray-400">{x.v}</span>
+          {rep.porMes.map((x) => (
+            <div key={x.mes} className="flex flex-1 flex-col items-center gap-1">
+              <span className="text-[9px] text-gray-400">{x.valor || ''}</span>
               <div
                 className="w-full rounded-t bg-gradient-to-t from-bosque to-hoja"
-                style={{ height: `${(x.v / MAX) * 100}%` }}
+                style={{ height: `${Math.max(2, (x.valor / max) * 100)}%`, opacity: x.valor ? 1 : 0.25 }}
               />
-              <span className="text-[9px] text-gray-400">{x.m}</span>
+              <span className="text-[9px] text-gray-400">{x.mes}</span>
             </div>
           ))}
         </div>
       </Card>
 
-      {/* Indicadores */}
+      {/* Indicadores reales */}
       <div className="mb-4 grid grid-cols-2 gap-3">
-        <Indicador Icon={IconShield} label="Cumplimiento EUDR" valor="94%" />
-        <Indicador Icon={IconPin} label="Lotes certificados" valor="127" />
-        <Indicador Icon={IconGlobe} label="Kg exportados" valor="245,000" />
-        <Indicador Icon={IconClock} label="Tiempo prom. certificación" valor="4.2 min" />
+        <Indicador Icon={IconShield} label="Cumplimiento EUDR" valor={`${rep.resumen.cumplimientoEudr}%`} />
+        <Indicador Icon={IconPin} label="Lotes certificados" valor={String(rep.resumen.lotesCertificados)} />
+        <Indicador Icon={IconGlobe} label="Kg exportados" valor={rep.resumen.kgExportados.toLocaleString('es-PE')} />
+        <Indicador Icon={IconClock} label="Tiempo prom. certificación" valor={rep.resumen.tiempoPromedio} />
       </div>
 
-      <Button className="mb-2 w-full" onClick={() => alert('Demo: aquí se generaría el reporte PDF.')}>
+      <Button className="mb-2 w-full" onClick={() => descargarReportePDF(rep)}>
         <IconDownload width={20} height={20} /> Generar reporte PDF
       </Button>
-      <Button variant="outline" className="w-full" onClick={() => alert('Demo: aquí se exportaría a Excel.')}>
+      <Button variant="outline" className="w-full" onClick={() => descargarReporteExcel(rep)}>
         <IconDownload width={20} height={20} /> Exportar Excel
       </Button>
 
       <p className="mt-4 text-center text-[11px] text-gray-400">
-        Generado automáticamente por AGRO-TRACE
+        Generado automáticamente por AGRO-TRACE · {rep.resumen.cooperativa}
       </p>
     </AppShell>
   );

@@ -56,12 +56,12 @@ export default function Login() {
       </div>
 
       <form onSubmit={onSubmit} className="space-y-4">
-        <Field label="Número de celular" icon={<IconPhone width={20} height={20} />}>
+        <Field label="Número de celular o DNI" icon={<IconPhone width={20} height={20} />}>
           <Input
             icon
-            type="tel"
+            type="text"
             inputMode="numeric"
-            placeholder="Ej. 987654321"
+            placeholder="Celular (987…) o DNI (445…)"
             value={celular}
             onChange={(e) => setCelular(e.target.value)}
             autoComplete="username"

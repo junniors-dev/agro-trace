@@ -5,16 +5,18 @@
 import { sha256Hex } from './hash.js';
 import { generarQrDataUrl, construirUrlVerificacion, decodePayload } from './qr.js';
 
-const KEY = 'agrotrace_db_v1';
+// Al cambiar la estructura del seed (p.ej. agregar DNI) se sube la version
+// para forzar una recarga limpia de los datos de demo.
+const KEY = 'agrotrace_db_v2';
 
 // ---------------- Semilla inicial ----------------
 function semilla() {
   return {
     seq: { lote: 1, etapa: 0, notif: 0, cert: 0 },
     usuarios: [
-      { id: 1, nombre: 'Juan Pérez López', celular: '987654321', password: 'agro2026', rol: 'agricultor', cooperativa: 'APROPAL', avatar_iniciales: 'JP' },
-      { id: 2, nombre: 'Diego Rivas Chávez', celular: '976543210', password: 'coop2026', rol: 'gerente', cooperativa: 'APROPAL', avatar_iniciales: 'DR' },
-      { id: 3, nombre: 'María Torres Gil', celular: '965432109', password: 'gore2026', rol: 'gore', cooperativa: 'GORE Lambayeque', avatar_iniciales: 'MT' },
+      { id: 1, nombre: 'Juan Pérez López', celular: '987654321', dni: '44556677', password: 'agro2026', rol: 'agricultor', cooperativa: 'APROPAL', avatar_iniciales: 'JP' },
+      { id: 2, nombre: 'Diego Rivas Chávez', celular: '976543210', dni: '40112233', password: 'coop2026', rol: 'gerente', cooperativa: 'APROPAL', avatar_iniciales: 'DR' },
+      { id: 3, nombre: 'María Torres Gil', celular: '965432109', dni: '45998877', password: 'gore2026', rol: 'gore', cooperativa: 'GORE Lambayeque', avatar_iniciales: 'MT' },
     ],
     parcelas: [
       { id: 1, codigo: 'P-042', nombre: 'Finca El Amanecer', agricultor_id: 1, distrito: 'Olmos', lat: -5.9860, lng: -79.7460, area_ha: 3.5, estado_satelital: 'validado' },
@@ -157,10 +159,12 @@ function siguienteCodigo(db) {
 
 // ---------------- API publica (misma forma que el antiguo cliente HTTP) ----------------
 export const api = {
-  async login(celular, password) {
+  // Acepta celular O DNI como identificador (segun el Excel: DNI; segun la app: celular).
+  async login(identificador, password) {
     const db = await init();
-    const u = db.usuarios.find((x) => x.celular === String(celular).trim() && x.password === String(password));
-    if (!u) throw new Error('Credenciales incorrectas. Verifica tu celular y contraseña.');
+    const id = String(identificador).trim();
+    const u = db.usuarios.find((x) => (x.celular === id || x.dni === id) && x.password === String(password));
+    if (!u) throw new Error('Credenciales incorrectas. Verifica tu celular/DNI y contraseña.');
     const { password: _, ...usuario } = u;
     return { usuario };
   },
@@ -253,6 +257,56 @@ export const api = {
   async lotes() {
     const db = await init();
     return { lotes: [...db.lotes].sort((a, b) => b.id - a.id) };
+  },
+
+  // Reporte de sostenibilidad calculado a partir de los lotes/certificados reales.
+  async reporteSostenibilidad() {
+    const db = await init();
+    const certificados = db.certificados;
+    const total = certificados.length;
+    const validados = certificados.filter((c) => c.estado_satelital === 'validado').length;
+    const cumplimientoEudr = total ? Math.round((validados / total) * 100) : 100;
+
+    // Kg exportados = suma del peso de packing de los lotes certificados
+    const kgExportados = db.etapas
+      .filter((e) => e.tipo_etapa === 'packing' && db.lotes.find((l) => l.id === e.lote_id)?.estado === 'certificado')
+      .reduce((s, e) => s + (e.peso_kg || 0), 0);
+
+    // Lotes certificados por mes (del año 2026), a partir de la fecha de packing
+    const meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+    const porMes = Array(12).fill(0);
+    for (const c of certificados) {
+      const packing = db.etapas.find((e) => e.lote_id === c.lote_id && e.tipo_etapa === 'packing');
+      const fecha = packing?.fecha || '';
+      const m = parseInt((fecha.split('-')[1] || '0'), 10);
+      if (m >= 1 && m <= 12) porMes[m - 1] += 1;
+    }
+
+    // Detalle por lote (para el Excel)
+    const detalle = certificados.map((c) => {
+      const lote = db.lotes.find((l) => l.id === c.lote_id) || {};
+      const parcela = db.parcelas.find((p) => p.id === lote.parcela_id) || {};
+      const packing = db.etapas.find((e) => e.lote_id === c.lote_id && e.tipo_etapa === 'packing') || {};
+      return {
+        codigo: c.codigo, producto: lote.producto || 'Palta Hass',
+        parcela: parcela.codigo || '', distrito: parcela.distrito || '',
+        peso_kg: packing.peso_kg || 0, estado_eudr: c.estado_satelital === 'validado' ? 'Validado' : 'Alerta',
+        emitido: (c.emitido_en || '').split(' ')[0], hash: c.hash_sha256,
+      };
+    });
+
+    return {
+      resumen: {
+        lotesCertificados: total,
+        cumplimientoEudr,
+        kgExportados: Math.round(kgExportados),
+        tiempoPromedio: '4.2 min', // simulado (no se mide el tiempo real de certificacion)
+        cooperativa: 'APROPAL',
+        generado: ahora().split(' ')[0],
+      },
+      porMes: meses.map((m, i) => ({ mes: m, valor: porMes[i] })),
+      detalle,
+    };
   },
 
   async lote(id) {

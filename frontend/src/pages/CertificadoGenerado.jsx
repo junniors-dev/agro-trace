@@ -6,6 +6,7 @@ import { api } from '../services/api.js';
 import AppShell from '../components/layout/AppShell.jsx';
 import { Card, Button, Badge } from '../components/ui/index.jsx';
 import { IconShield, IconShare, IconDownload, IconCheckCircle } from '../components/icons.jsx';
+import { descargarCertificadoPDF } from '../services/pdf.js';
 
 export default function CertificadoGenerado() {
   const { codigo } = useParams();
@@ -91,8 +92,11 @@ export default function CertificadoGenerado() {
         <Button className="w-full" onClick={compartir}>
           <IconShare width={20} height={20} /> Compartir con importador
         </Button>
-        <Button variant="outline" className="w-full" to={`/verificar/${cert.codigo}`}>
-          <IconDownload width={20} height={20} /> Ver verificación pública
+        <Button variant="outline" className="w-full" onClick={() => descargarCertificadoPDF(cert, cert.payload)}>
+          <IconDownload width={20} height={20} /> Descargar certificado (PDF)
+        </Button>
+        <Button variant="ghost" className="w-full" to={`/verificar/${cert.codigo}`}>
+          Ver verificación pública
         </Button>
         <button onClick={() => navigate('/dashboard')} className="w-full py-2 text-center text-sm text-gray-400">
           Volver al Dashboard

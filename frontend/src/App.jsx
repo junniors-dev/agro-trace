@@ -9,6 +9,8 @@ import ValidacionParcela from './pages/ValidacionParcela.jsx';
 import Dashboard from './pages/Dashboard.jsx';
 import RegistrarLote from './pages/RegistrarLote.jsx';
 import RegistrarParcela from './pages/RegistrarParcela.jsx';
+import MisLotes from './pages/MisLotes.jsx';
+import LoteDetalle from './pages/LoteDetalle.jsx';
 import CertificadoGenerado from './pages/CertificadoGenerado.jsx';
 import VerificacionPublica from './pages/VerificacionPublica.jsx';
 import Notificaciones from './pages/Notificaciones.jsx';
@@ -37,6 +39,8 @@ export default function App() {
       <Route path="/dashboard" element={<Privada><Dashboard /></Privada>} />
       <Route path="/registrar" element={<Privada><RegistrarLote /></Privada>} />
       <Route path="/registrar/:loteId" element={<Privada><RegistrarLote /></Privada>} />
+      <Route path="/lotes" element={<Privada><MisLotes /></Privada>} />
+      <Route path="/lotes/:id" element={<Privada><LoteDetalle /></Privada>} />
       <Route path="/parcelas/nueva" element={<Privada><RegistrarParcela /></Privada>} />
       <Route path="/parcela/:id" element={<Privada><ValidacionParcela /></Privada>} />
       <Route path="/certificado/:codigo" element={<Privada><CertificadoGenerado /></Privada>} />

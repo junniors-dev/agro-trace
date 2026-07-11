@@ -6,7 +6,7 @@ const HOJA = [34, 197, 94];
 const GRIS = [107, 114, 128];
 
 // ---- Certificado de Origen Digital en PDF ----
-export function descargarCertificadoPDF(cert, verificacion) {
+export function descargarCertificadoPDF(cert, verificacion, fotos = []) {
   const doc = new jsPDF({ unit: 'mm', format: 'a4' });
   const W = 210;
   const m = 18;
@@ -93,6 +93,25 @@ export function descargarCertificadoPDF(cert, verificacion) {
   doc.setTextColor(30, 30, 30);
   doc.setFontSize(8);
   doc.text(doc.splitTextToSize(cert.hash_sha256 || '', W - 2 * m), m, y);
+  y += 10;
+
+  // Evidencia fotográfica (si hay)
+  if (fotos && fotos.length) {
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(...BOSQUE);
+    doc.setFontSize(11);
+    doc.text('Evidencia fotografica', m, y);
+    y += 4;
+    const ancho = 40, alto = 30, gap = 6;
+    fotos.slice(0, 4).forEach((f, i) => {
+      const x = m + i * (ancho + gap);
+      try { doc.addImage(f.url, 'JPEG', x, y, ancho, alto); } catch {}
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(8);
+      doc.setTextColor(...GRIS);
+      doc.text(String(f.etapa), x, y + alto + 4);
+    });
+  }
 
   // Pie
   doc.setFont('helvetica', 'normal');

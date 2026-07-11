@@ -7,8 +7,9 @@ import { api } from '../services/api.js';
 import { useAuth } from '../context/AuthContext.jsx';
 import AppShell from '../components/layout/AppShell.jsx';
 import { Card, Button, Input, Select, Field, StepProgress, ETAPAS } from '../components/ui/index.jsx';
+import CapturaFoto from '../components/CapturaFoto.jsx';
 import {
-  IconUser, IconPin, IconCalendar, IconScale, IconCamera, IconBox,
+  IconUser, IconPin, IconCalendar, IconScale, IconBox,
   IconWifiOff, IconCheck, IconArrowLeft,
 } from '../components/icons.jsx';
 
@@ -38,7 +39,7 @@ export default function RegistrarLote() {
     destino: 'Unión Europea',
     contenedor: '',
     condicion: 'Óptima',
-    foto: false,
+    foto: null,
   });
 
   const set = (campo, valor) => setForm((f) => ({ ...f, [campo]: valor }));
@@ -101,7 +102,7 @@ export default function RegistrarLote() {
         peso_kg: form.peso_kg ? Number(form.peso_kg) : null,
         gps_lat: gps.lat,
         gps_lng: gps.lng,
-        foto_url: form.foto ? `evidencia-${etapaActual}.jpg` : null,
+        foto_url: form.foto || null,
         extra: Object.keys(extra).length ? extra : null,
       });
 
@@ -115,7 +116,7 @@ export default function RegistrarLote() {
         setTimeout(() => {
           setExito(false);
           setPaso((p) => p + 1);
-          set('peso_kg', ''); set('foto', false); set('ubicacion', '');
+          set('peso_kg', ''); set('foto', null); set('ubicacion', '');
         }, 900);
       }
     } catch (err) {
@@ -251,17 +252,11 @@ export default function RegistrarLote() {
           </div>
         )}
 
-        {/* Foto de evidencia (simulada) */}
-        <button
-          type="button"
-          onClick={() => set('foto', !form.foto)}
-          className={`flex w-full items-center justify-center gap-2 rounded-xl border-2 border-dashed py-3 text-sm font-medium transition ${
-            form.foto ? 'border-hoja bg-hoja/8 text-bosque' : 'border-gray-300 text-gray-500'
-          }`}
-        >
-          <IconCamera width={20} height={20} />
-          {form.foto ? '✓ 1 foto de evidencia adjunta' : 'Tomar foto de evidencia'}
-        </button>
+        {/* Foto de evidencia REAL (cámara/galería del dispositivo) */}
+        <div>
+          <span className="mb-1.5 block text-sm font-medium text-gray-700">Foto de evidencia</span>
+          <CapturaFoto valor={form.foto || null} onChange={(dataUrl) => set('foto', dataUrl)} />
+        </div>
 
         {error && <div className="rounded-xl bg-alerta/10 px-4 py-2.5 text-sm font-medium text-alerta">{error}</div>}
       </Card>

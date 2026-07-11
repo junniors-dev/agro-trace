@@ -7,7 +7,7 @@ import { generarQrDataUrl, construirUrlVerificacion, decodePayload } from './qr.
 
 // Al cambiar la estructura del seed (p.ej. agregar DNI) se sube la version
 // para forzar una recarga limpia de los datos de demo.
-const KEY = 'agrotrace_db_v2';
+const KEY = 'agrotrace_db_v3';
 
 // ---------------- Semilla inicial ----------------
 function semilla() {
@@ -29,10 +29,10 @@ function semilla() {
       { id: 1, codigo: 'AT-2026-0001', parcela_id: 1, producto: 'Palta Hass', etapa_actual: 'certificado', estado: 'certificado', creado_por: 1, creado_en: '2026-04-25 10:00' },
     ],
     etapas: [
-      { id: 1, lote_id: 1, tipo_etapa: 'siembra', responsable: 'Juan Pérez López', ubicacion: 'Finca El Amanecer, Olmos', fecha: '2026-01-15', peso_kg: null, gps_lat: -5.9860, gps_lng: -79.7460, foto_url: 'evidencia-siembra.jpg', extra: null },
-      { id: 2, lote_id: 1, tipo_etapa: 'cosecha', responsable: 'Juan Pérez López', ubicacion: 'Finca El Amanecer, Olmos', fecha: '2026-04-20', peso_kg: 3200, gps_lat: -5.9861, gps_lng: -79.7462, foto_url: 'evidencia-cosecha.jpg', extra: { condicion: 'Óptima' } },
-      { id: 3, lote_id: 1, tipo_etapa: 'acopio', responsable: 'Centro de Acopio Lambayeque S.A.', ubicacion: 'Centro de Acopio Lambayeque', fecha: '2026-04-22', peso_kg: 3180, gps_lat: -6.7100, gps_lng: -79.8300, foto_url: 'evidencia-acopio.jpg', extra: null },
-      { id: 4, lote_id: 1, tipo_etapa: 'packing', responsable: 'Empacadora Frutos del Norte', ubicacion: 'Empacadora Frutos del Norte', fecha: '2026-04-25', peso_kg: 2400, gps_lat: -6.6500, gps_lng: -79.8000, foto_url: 'evidencia-packing.jpg', extra: { cajas: 240, calibre: '14', destino: 'Unión Europea', contenedor: 'MSKU-7841203' } },
+      { id: 1, lote_id: 1, tipo_etapa: 'siembra', responsable: 'Juan Pérez López', ubicacion: 'Finca El Amanecer, Olmos', fecha: '2026-01-15', peso_kg: null, gps_lat: -5.9860, gps_lng: -79.7460, foto_url: null, extra: null },
+      { id: 2, lote_id: 1, tipo_etapa: 'cosecha', responsable: 'Juan Pérez López', ubicacion: 'Finca El Amanecer, Olmos', fecha: '2026-04-20', peso_kg: 3200, gps_lat: -5.9861, gps_lng: -79.7462, foto_url: null, extra: { condicion: 'Óptima' } },
+      { id: 3, lote_id: 1, tipo_etapa: 'acopio', responsable: 'Centro de Acopio Lambayeque S.A.', ubicacion: 'Centro de Acopio Lambayeque', fecha: '2026-04-22', peso_kg: 3180, gps_lat: -6.7100, gps_lng: -79.8300, foto_url: null, extra: null },
+      { id: 4, lote_id: 1, tipo_etapa: 'packing', responsable: 'Empacadora Frutos del Norte', ubicacion: 'Empacadora Frutos del Norte', fecha: '2026-04-25', peso_kg: 2400, gps_lat: -6.6500, gps_lng: -79.8000, foto_url: null, extra: { cajas: 240, calibre: '14', destino: 'Unión Europea', contenedor: 'MSKU-7841203' } },
     ],
     certificados: [], // el del lote demo se completa en init() (necesita hash+QR async)
     notificaciones: [
@@ -297,7 +297,42 @@ export const api = {
 
   async lotes() {
     const db = await init();
-    return { lotes: [...db.lotes].sort((a, b) => b.id - a.id) };
+    // Enriquecemos con parcela, estado satelital y foto de portada para el listado.
+    const lotes = [...db.lotes].sort((a, b) => b.id - a.id).map((l) => {
+      const parcela = db.parcelas.find((p) => p.id === l.parcela_id) || {};
+      const etapas = db.etapas.filter((e) => e.lote_id === l.id);
+      const foto = etapas.find((e) => e.foto_url)?.foto_url || null;
+      const peso = etapas.find((e) => e.tipo_etapa === 'packing')?.peso_kg
+        || etapas.find((e) => e.tipo_etapa === 'cosecha')?.peso_kg || null;
+      return {
+        ...l, parcela_codigo: parcela.codigo, parcela_nombre: parcela.nombre,
+        distrito: parcela.distrito, estado_satelital: parcela.estado_satelital,
+        foto, peso, num_etapas: etapas.length,
+      };
+    });
+    return { lotes };
+  },
+
+  // Elimina un lote con sus etapas y su certificado.
+  async eliminarLote(id) {
+    const db = await init();
+    id = Number(id);
+    db.lotes = db.lotes.filter((l) => l.id !== id);
+    db.etapas = db.etapas.filter((e) => e.lote_id !== id);
+    db.certificados = db.certificados.filter((c) => c.lote_id !== id);
+    save(db);
+    return { ok: true };
+  },
+
+  // Elimina una parcela (si no tiene lotes asociados).
+  async eliminarParcela(id) {
+    const db = await init();
+    id = Number(id);
+    const enUso = db.lotes.some((l) => l.parcela_id === id);
+    if (enUso) throw new Error('No se puede eliminar: la parcela tiene lotes registrados.');
+    db.parcelas = db.parcelas.filter((p) => p.id !== id);
+    save(db);
+    return { ok: true };
   },
 
   // Reporte de sostenibilidad calculado a partir de los lotes/certificados reales.

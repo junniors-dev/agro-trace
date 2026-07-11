@@ -72,7 +72,10 @@ export default function Dashboard() {
 
       {/* Actividad reciente */}
       <section>
-        <h2 className="mb-2 text-xs font-bold uppercase tracking-wide text-bosque/70">Actividad reciente</h2>
+        <div className="mb-2 flex items-center justify-between">
+          <h2 className="text-xs font-bold uppercase tracking-wide text-bosque/70">Actividad reciente</h2>
+          <button onClick={() => navigate('/lotes')} className="text-xs font-semibold text-bosque">Ver todos →</button>
+        </div>
         <div className="space-y-2.5">
           {data?.actividad?.length ? (
             data.actividad.map((a) => (

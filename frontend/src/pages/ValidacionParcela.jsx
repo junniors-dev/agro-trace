@@ -6,9 +6,9 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { api } from '../services/api.js';
 import AppShell from '../components/layout/AppShell.jsx';
 import ParcelaSatMap from '../components/map/ParcelaSatMap.jsx';
-import { Card, Badge } from '../components/ui/index.jsx';
+import { Card, Badge, Button } from '../components/ui/index.jsx';
 import {
-  IconArrowLeft, IconPin, IconCalendar, IconUser, IconShield, IconCheckCircle,
+  IconArrowLeft, IconPin, IconCalendar, IconUser, IconShield, IconCheckCircle, IconTrash,
 } from '../components/icons.jsx';
 
 export default function ValidacionParcela() {
@@ -16,10 +16,22 @@ export default function ValidacionParcela() {
   const navigate = useNavigate();
   const [p, setP] = useState(null);
   const [error, setError] = useState('');
+  const [confirmar, setConfirmar] = useState(false);
+  const [borrarError, setBorrarError] = useState('');
 
   useEffect(() => {
     api.parcela(id).then((d) => setP(d.parcela)).catch((e) => setError(e.message));
   }, [id]);
+
+  async function eliminar() {
+    try {
+      await api.eliminarParcela(id);
+      navigate('/dashboard', { replace: true });
+    } catch (e) {
+      setBorrarError(e.message);
+      setConfirmar(false);
+    }
+  }
 
   if (error) return <AppShell headerVariant="green"><Card className="p-6 text-center text-sm text-alerta">{error}</Card></AppShell>;
   if (!p) return <AppShell headerVariant="green"><p className="py-10 text-center text-sm text-gray-400">Cargando parcela…</p></AppShell>;
@@ -81,6 +93,24 @@ export default function ValidacionParcela() {
             <Badge estado={h.estado === 'alerta' ? 'alerta' : 'validado'} />
           </Card>
         ))}
+      </div>
+
+      {/* Eliminar parcela */}
+      <div className="mt-5">
+        {borrarError && <div className="mb-2 rounded-xl bg-alerta/10 px-4 py-2.5 text-sm font-medium text-alerta">{borrarError}</div>}
+        {confirmar ? (
+          <Card className="p-4">
+            <p className="mb-3 text-sm text-gray-700">¿Eliminar la parcela {p.codigo}? Solo se puede si no tiene lotes registrados.</p>
+            <div className="flex gap-2">
+              <Button variant="outline" className="flex-1" onClick={() => setConfirmar(false)}>Cancelar</Button>
+              <Button variant="danger" className="flex-1" onClick={eliminar}>Eliminar</Button>
+            </div>
+          </Card>
+        ) : (
+          <Button variant="outline" className="w-full !border-alerta/40 !text-alerta" onClick={() => setConfirmar(true)}>
+            <IconTrash width={18} height={18} /> Eliminar parcela
+          </Button>
+        )}
       </div>
     </AppShell>
   );

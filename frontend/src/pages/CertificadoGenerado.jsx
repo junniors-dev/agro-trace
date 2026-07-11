@@ -12,10 +12,17 @@ export default function CertificadoGenerado() {
   const { codigo } = useParams();
   const navigate = useNavigate();
   const [cert, setCert] = useState(null);
+  const [fotos, setFotos] = useState([]);
   const [error, setError] = useState('');
 
   useEffect(() => {
-    api.certificado(codigo).then((d) => setCert(d.certificado)).catch((e) => setError(e.message));
+    api.certificado(codigo).then((d) => {
+      setCert(d.certificado);
+      // Carga las fotos de evidencia del lote (no viajan en el QR por tamaño)
+      api.lote(d.certificado.lote_id).then(({ lote }) => {
+        setFotos((lote.etapas || []).filter((e) => e.foto_url).map((e) => ({ etapa: e.tipo_etapa, url: e.foto_url })));
+      }).catch(() => {});
+    }).catch((e) => setError(e.message));
   }, [codigo]);
 
   if (error) {
@@ -88,11 +95,26 @@ export default function CertificadoGenerado() {
         </div>
       </Card>
 
+      {/* Galería de fotos de evidencia */}
+      {fotos.length > 0 && (
+        <div className="mt-4">
+          <p className="mb-2 text-xs font-bold uppercase tracking-wide text-bosque/70">Evidencia fotográfica</p>
+          <div className="grid grid-cols-4 gap-2">
+            {fotos.map((f) => (
+              <div key={f.etapa} className="overflow-hidden rounded-lg border border-gray-100">
+                <img src={f.url} alt={f.etapa} className="aspect-square w-full object-cover" />
+                <p className="bg-bosque/5 py-0.5 text-center text-[9px] capitalize text-bosque">{f.etapa}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       <div className="mt-4 space-y-2.5">
         <Button className="w-full" onClick={compartir}>
           <IconShare width={20} height={20} /> Compartir con importador
         </Button>
-        <Button variant="outline" className="w-full" onClick={() => descargarCertificadoPDF(cert, cert.payload)}>
+        <Button variant="outline" className="w-full" onClick={() => descargarCertificadoPDF(cert, cert.payload, fotos)}>
           <IconDownload width={20} height={20} /> Descargar certificado (PDF)
         </Button>
         <Button variant="ghost" className="w-full" to={`/verificar/${cert.codigo}`}>

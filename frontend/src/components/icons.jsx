@@ -30,3 +30,6 @@ export const IconShare = (p) => (<svg viewBox="0 0 24 24" width="24" height="24"
 export const IconLogout = (p) => (<svg viewBox="0 0 24 24" width="24" height="24" {...s} {...p}><path d="M15 4h3a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-3" /><path d="M10 12H3m0 0 3-3m-3 3 3 3" /></svg>);
 export const IconChevron = (p) => (<svg viewBox="0 0 24 24" width="24" height="24" {...s} {...p}><path d="m9 6 6 6-6 6" /></svg>);
 export const IconWifiOff = (p) => (<svg viewBox="0 0 24 24" width="24" height="24" {...s} {...p}><path d="M3 3l18 18M9 17a4 4 0 0 1 6 0M5 13a9 9 0 0 1 4-2.5M19 13a9 9 0 0 0-3-2" /><path d="M12 20h.01" /></svg>);
+export const IconSearch = (p) => (<svg viewBox="0 0 24 24" width="24" height="24" {...s} {...p}><circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" /></svg>);
+export const IconTrash = (p) => (<svg viewBox="0 0 24 24" width="24" height="24" {...s} {...p}><path d="M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M6 7l1 13a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-13" /><path d="M10 11v6M14 11v6" /></svg>);
+export const IconEdit = (p) => (<svg viewBox="0 0 24 24" width="24" height="24" {...s} {...p}><path d="M4 20h4l10-10a2 2 0 0 0-4-4L4 16v4Z" /><path d="M13.5 6.5l4 4" /></svg>);

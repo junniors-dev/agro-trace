@@ -39,7 +39,12 @@ export default function Dashboard() {
 
       {/* Monitor de parcelas */}
       <section className="mb-5">
-        <h2 className="mb-2 text-xs font-bold uppercase tracking-wide text-bosque/70">Monitor de parcelas</h2>
+        <div className="mb-2 flex items-center justify-between">
+          <h2 className="text-xs font-bold uppercase tracking-wide text-bosque/70">Monitor de parcelas</h2>
+          <button onClick={() => navigate('/parcelas/nueva')} className="flex items-center gap-1 text-xs font-semibold text-bosque">
+            <IconPlus width={15} height={15} /> Registrar parcela
+          </button>
+        </div>
         <ParcelasMap parcelas={parcelas} height={220} />
       </section>
 

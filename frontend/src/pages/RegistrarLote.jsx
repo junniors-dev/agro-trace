@@ -182,6 +182,12 @@ export default function RegistrarLote() {
           </Select>
         </Field>
 
+        {paso === 0 && (
+          <button type="button" onClick={() => navigate('/parcelas/nueva')} className="-mt-1 text-xs font-semibold text-bosque">
+            + ¿No está tu parcela? Regístrala
+          </button>
+        )}
+
         {parcelaSel && (
           <div className="flex items-center gap-2 rounded-xl bg-hoja/8 px-3 py-2 text-xs text-bosque">
             <IconPin width={16} height={16} />

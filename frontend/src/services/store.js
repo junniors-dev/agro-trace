@@ -212,6 +212,47 @@ export const api = {
     return { parcelas: db.parcelas.map((p) => ({ ...p, agricultor_nombre: db.usuarios.find((u) => u.id === p.agricultor_id)?.nombre })) };
   },
 
+  // Registrar una parcela nueva. Corre la validacion satelital simulada.
+  // TODO(produccion): la validacion vendria de Google Earth Engine sobre el poligono real.
+  async crearParcela({ nombre, distrito, lat, lng, area_ha, agricultor_id }) {
+    const db = await init();
+    if (!nombre || !distrito) throw new Error('Nombre y distrito son obligatorios.');
+    if (lat == null || lng == null || Number.isNaN(Number(lat)) || Number.isNaN(Number(lng))) {
+      throw new Error('Ingresa coordenadas GPS válidas.');
+    }
+    // Nuevo id y codigo derivados de lo existente (robusto sin depender del seq)
+    const id = db.parcelas.reduce((m, p) => Math.max(m, p.id), 0) + 1;
+    const maxNum = db.parcelas.reduce((m, p) => {
+      const n = parseInt(String(p.codigo).split('-')[1] || '0', 10);
+      return Number.isNaN(n) ? m : Math.max(m, n);
+    }, 0);
+    const codigo = `P-${String(maxNum + 1).padStart(3, '0')}`;
+
+    // Validacion satelital simulada: una parcela nueva se registra como validada.
+    const estado_satelital = 'validado';
+
+    const parcela = {
+      id, codigo, nombre: nombre.trim(),
+      agricultor_id: agricultor_id || 1,
+      distrito, lat: Number(lat), lng: Number(lng),
+      area_ha: area_ha ? Number(area_ha) : null,
+      estado_satelital,
+    };
+    db.parcelas.push(parcela);
+
+    // Notificacion informativa
+    db.seq.notif = (db.seq.notif || 0) + 1;
+    db.notificaciones.unshift({
+      id: db.seq.notif, usuario_id: agricultor_id || 1, categoria: 'exito',
+      titulo: `Parcela ${codigo} registrada y validada`,
+      mensaje: `La parcela "${parcela.nombre}" (${distrito}) fue validada satelitalmente: libre de deforestación.`,
+      leida: false, creada_en: 'ahora',
+    });
+
+    save(db);
+    return { parcela };
+  },
+
   // Detalle de una parcela + historial de validaciones satelitales (simulado).
   // TODO(produccion): el historial vendria de analisis reales de Google Earth Engine.
   async parcela(id) {

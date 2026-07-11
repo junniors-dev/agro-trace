@@ -8,6 +8,7 @@ import RecuperarPassword from './pages/RecuperarPassword.jsx';
 import ValidacionParcela from './pages/ValidacionParcela.jsx';
 import Dashboard from './pages/Dashboard.jsx';
 import RegistrarLote from './pages/RegistrarLote.jsx';
+import RegistrarParcela from './pages/RegistrarParcela.jsx';
 import CertificadoGenerado from './pages/CertificadoGenerado.jsx';
 import VerificacionPublica from './pages/VerificacionPublica.jsx';
 import Notificaciones from './pages/Notificaciones.jsx';
@@ -36,6 +37,7 @@ export default function App() {
       <Route path="/dashboard" element={<Privada><Dashboard /></Privada>} />
       <Route path="/registrar" element={<Privada><RegistrarLote /></Privada>} />
       <Route path="/registrar/:loteId" element={<Privada><RegistrarLote /></Privada>} />
+      <Route path="/parcelas/nueva" element={<Privada><RegistrarParcela /></Privada>} />
       <Route path="/parcela/:id" element={<Privada><ValidacionParcela /></Privada>} />
       <Route path="/certificado/:codigo" element={<Privada><CertificadoGenerado /></Privada>} />
       <Route path="/notificaciones" element={<Privada><Notificaciones /></Privada>} />

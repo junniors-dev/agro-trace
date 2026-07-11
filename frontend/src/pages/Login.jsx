@@ -1,6 +1,6 @@
 // Pantalla de inicio de sesion (celular + contrasena) con usuarios de prueba.
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
 import { api } from '../services/api.js';
 import Logo from '../components/Logo.jsx';
@@ -85,6 +85,11 @@ export default function Login() {
         <Button type="submit" className="w-full" disabled={cargando}>
           {cargando ? 'Ingresando…' : 'Iniciar sesión'}
         </Button>
+
+        <div className="flex items-center justify-between text-sm">
+          <Link to="/recuperar" className="text-gray-500 hover:text-bosque">¿Olvidaste tu contraseña?</Link>
+          <Link to="/registro" className="font-semibold text-bosque">Crear cuenta</Link>
+        </div>
       </form>
 
       {demos.length > 0 && (

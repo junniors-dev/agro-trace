@@ -1,9 +1,11 @@
 // Mapa de parcelas con Leaflet + OpenStreetMap (sin API key).
 // Inicializa Leaflet manualmente en un useEffect para evitar dependencias de version.
 import { useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import L from 'leaflet';
 
 export default function ParcelasMap({ parcelas = [], height = 240 }) {
+  const navigate = useNavigate();
   const contenedorRef = useRef(null);
   const mapRef = useRef(null);
 
@@ -51,8 +53,10 @@ export default function ParcelasMap({ parcelas = [], height = 240 }) {
       marker.bindPopup(
         `<strong>${p.codigo}</strong> · ${p.nombre || ''}<br/>${p.distrito || ''} · ${
           alerta ? '⚠️ Alerta EUDR' : '✓ Validado'
-        }`
+        }<br/><span style="color:#14532D;font-weight:600">Ver validación →</span>`
       );
+      // Al hacer click en el marcador, abre la validacion satelital de la parcela
+      marker.on('click', () => navigate(`/parcela/${p.id}`));
       puntos.push([p.lat, p.lng]);
     });
 

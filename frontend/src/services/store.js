@@ -170,9 +170,59 @@ export const api = {
     return { usuarios: db.usuarios.map((u) => ({ nombre: u.nombre, celular: u.celular, rol: u.rol })) };
   },
 
+  // Crear cuenta: valida y agrega un usuario nuevo al almacenamiento local.
+  async registrar({ nombre, celular, dni, rol, password, confirmar, acepta }) {
+    const db = await init();
+    nombre = (nombre || '').trim();
+    celular = (celular || '').trim();
+    dni = (dni || '').trim();
+
+    if (!nombre || !celular || !dni || !rol || !password) throw new Error('Completa todos los campos.');
+    if (!/^\d{9}$/.test(celular)) throw new Error('El celular debe tener 9 dígitos.');
+    if (!/^\d{8}$/.test(dni)) throw new Error('El DNI debe tener 8 dígitos.');
+    if (password.length < 6) throw new Error('La contraseña debe tener al menos 6 caracteres.');
+    if (password !== confirmar) throw new Error('Las contraseñas no coinciden.');
+    if (!acepta) throw new Error('Debes aceptar los términos y condiciones.');
+    if (db.usuarios.some((u) => u.celular === celular)) throw new Error('Ya existe una cuenta con ese número de celular.');
+
+    const iniciales = nombre.split(/\s+/).slice(0, 2).map((p) => p[0]?.toUpperCase() || '').join('') || 'US';
+    const coop = rol === 'gore' ? 'GORE Lambayeque' : 'APROPAL';
+    const id = Math.max(0, ...db.usuarios.map((u) => u.id)) + 1;
+    const nuevo = { id, nombre, celular, password: String(password), rol, dni, cooperativa: coop, avatar_iniciales: iniciales };
+    db.usuarios.push(nuevo);
+    save(db);
+    const { password: _, ...usuario } = nuevo;
+    return { usuario };
+  },
+
+  // Recuperar contrasena (simulado). TODO(produccion): enviar SMS real (ej. Twilio).
+  async recuperarPassword(celular) {
+    const db = await init();
+    const existe = db.usuarios.some((u) => u.celular === String(celular).trim());
+    // No revelamos si existe o no (buena practica). Simulamos envio.
+    return { ok: true, existe };
+  },
+
   async parcelas() {
     const db = await init();
     return { parcelas: db.parcelas.map((p) => ({ ...p, agricultor_nombre: db.usuarios.find((u) => u.id === p.agricultor_id)?.nombre })) };
+  },
+
+  // Detalle de una parcela + historial de validaciones satelitales (simulado).
+  // TODO(produccion): el historial vendria de analisis reales de Google Earth Engine.
+  async parcela(id) {
+    const db = await init();
+    const p = db.parcelas.find((x) => x.id === Number(id));
+    if (!p) throw new Error('Parcela no encontrada.');
+    const propietario = db.usuarios.find((u) => u.id === p.agricultor_id)?.nombre || '—';
+    // Historial: 4 analisis recientes; el mas reciente refleja el estado actual.
+    const fechas = ['25/04/2026', '10/04/2026', '05/04/2026', '01/04/2026'];
+    const historial = fechas.map((fecha, i) => ({
+      fecha,
+      area_ha: p.area_ha,
+      estado: i === 0 ? p.estado_satelital : 'validado',
+    }));
+    return { parcela: { ...p, propietario, fuente: 'Google Earth Engine', fecha_analisis: fechas[0], historial } };
   },
 
   async dashboard() {

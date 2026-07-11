@@ -24,13 +24,21 @@ export function AuthProvider({ children }) {
     return usuario;
   }, []);
 
+  // Crear cuenta y entrar automaticamente.
+  const registrar = useCallback(async (datos) => {
+    const { usuario } = await api.registrar(datos);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(usuario));
+    setUsuario(usuario);
+    return usuario;
+  }, []);
+
   const logout = useCallback(() => {
     localStorage.removeItem(STORAGE_KEY);
     setUsuario(null);
   }, []);
 
   return (
-    <AuthContext.Provider value={{ usuario, login, logout }}>
+    <AuthContext.Provider value={{ usuario, login, registrar, logout }}>
       {children}
     </AuthContext.Provider>
   );

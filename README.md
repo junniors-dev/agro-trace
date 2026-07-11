@@ -23,13 +23,13 @@ MVP del proyecto universitario **GEBT (Grupo 6)**. App **mobile-first** que regi
 
 ## 🔑 Usuarios de prueba
 
-| Rol | Celular | Contraseña |
-|-----|---------|-----------|
-| Agricultor | `987654321` | `agro2026` |
-| Gerente de cooperativa | `976543210` | `coop2026` |
-| Funcionario GORE | `965432109` | `gore2026` |
+| Rol | Celular | DNI | Contraseña |
+|-----|---------|-----|-----------|
+| Agricultor | `987654321` | `44556677` | `agro2026` |
+| Gerente de cooperativa | `976543210` | `40112233` | `coop2026` |
+| Funcionario GORE | `965432109` | `45998877` | `gore2026` |
 
-*(En la pantalla de login puedes tocar cada usuario para autocompletar.)*
+*(Puedes iniciar sesión con **celular O DNI**. En la pantalla de login puedes tocar cada usuario para autocompletar. También puedes **crear una cuenta** nueva.)*
 
 ---
 
